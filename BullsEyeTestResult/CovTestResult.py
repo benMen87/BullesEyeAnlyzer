@@ -75,12 +75,9 @@ def create_clean_covoutput(covorig_fullpath, ignor_list, outputcov_fullpath):
 
 
 def tstcov(tst_name, tst_srcpath, ignore_list, ouput_path):
-    with open(ouput_path + tst_name +'origfile.txt', 'w') as orig_cov:
-        #
-        # get bullseye output file of test
-        #
-        subprocess.run(['covbr', '-u -c1 -dDir {}'.format(tst_srcpath)], stdout=orig_cov)
-        amountuncov = create_clean_covoutput(orig_cov, ignore_list, ouput_path + tst_name + 'cov.txt')
+   
+    p = subprocess.Popen('covbr -u -c1 -dDir tst_srcpath', stdout=subprocess.PIPE)
+    out = p.communicate()
     return amountuncov == 0
 
 

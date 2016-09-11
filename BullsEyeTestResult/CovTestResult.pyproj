@@ -13,6 +13,11 @@
     <OutputPath>.</OutputPath>
     <Name>CovTestResult</Name>
     <RootNamespace>BullsEyeTestResult</RootNamespace>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterArguments>
+    </InterpreterArguments>
+    <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
+    <CommandLineArguments>-i C:\p4root\smc-e5-hsreter\BullsEyeTestResult\cov_input.json</CommandLineArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
