@@ -74,21 +74,24 @@ def create_clean_covoutput(covorig_fullpath, ignor_list, outputcov_fullpath):
     return uncov_count
 
 
-def tstcov(tst_name, tst_srcpath, ignorlist, ouput_path):
+def tstcov(tst_name, tst_srcpath, ignore_list, ouput_path):
     with open(ouput_path + tst_name +'origfile.txt', 'w') as orig_cov:
         #
         # get bullseye output file of test
         #
         subprocess.run(['covbr', '-u -c1 -dDir {}'.format(tst_srcpath)], stdout=orig_cov)
+        amountuncov = create_clean_covoutput(orig_cov, ignore_list, ouput_path + tst_name + 'cov.txt')
+    return amountuncov == 0
 
 
 def main():
     parser = argparse.ArgumentParser(description="Analyze BullsEye Cov test results remove all ignore conditions.")
     parser.add_argument("-i", "--input_jsn_file", type=str, default="cov_input.json", help="Path to json file containing script input args")
+
     #
     #read input args
-    args              = parser.parse_args()
-
+    args                                              = parser.parse_args()
+    succsess_dict                                     = dict()
 
     with open(args.input_jsn_file) as cov_args:
         covtests      = json.load(cov_args)
@@ -99,8 +102,9 @@ def main():
             ignore_list = testargs['ignore'] + global_ignore
             src_path    = testargs['src_path']
 
-            tstcov(tstname, src_path, ignore_list, output_dir)
+            succsess_dict[tstname] = tstcov(tstname, src_path, ignore_list, output_dir)
 
 
 if __name__ == '__main__':
-    create_clean_covoutput(r'C:\Users\hsreter\Desktop\ethCovWtSrcCode.txt',['if (ptrPinnedData->ccfcPinnedCount >= MAX_PINNED_CCFC)'], r'C:\Users\hsreter\Desktop\testcov.txt') 
+    #create_clean_covoutput(r'C:\Users\hsreter\Desktop\ethCovWtSrcCode.txt',['if (ptrPinnedData->ccfcPinnedCount >= MAX_PINNED_CCFC)'], r'C:\Users\hsreter\Desktop\testcov.txt') 
+    main()
