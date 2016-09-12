@@ -7,9 +7,9 @@ import json
 
 
 
-def create_clean_covoutput(covorig_fullpath, ignor_list, outputcov_fullpath):
+def create_clean_covoutput(orig_uncov_list, ignor_list, outputcov_fullpath):
 
-    with open(covorig_fullpath, 'r') as origfp, open(outputcov_fullpath, 'w') as outfp:
+    with open(outputcov_fullpath, 'w') as outfp:
         
         uncov_somthing      = re.compile('\\s*-->[TtFf]?\\s+([0-9]+)')
         uncov_condition     = re.compile('((\\s)?)+-->[TtFf]')
@@ -22,7 +22,7 @@ def create_clean_covoutput(covorig_fullpath, ignor_list, outputcov_fullpath):
         currcodeline_number = 0
         prevcodeline_number = 0
 
-        for line in origfp: 
+        for line in orig_uncov_list: 
             
             #
             # Write src file name 
@@ -36,10 +36,10 @@ def create_clean_covoutput(covorig_fullpath, ignor_list, outputcov_fullpath):
             # First see if line is an uncovered code line
             #
             uncov_match =  uncov_somthing.match(line)
-            currcodeline_number = int(uncov_match.group(1))
 
             if uncov_match:
 
+                currcodeline_number = int(uncov_match.group(1))
                 uncov_count += 1
 
                 #
@@ -75,12 +75,14 @@ def create_clean_covoutput(covorig_fullpath, ignor_list, outputcov_fullpath):
 
 
 def tstcov(tst_name, tst_srcpath, ignore_list, ouput_path):
-    with open(ouput_path + tst_name +'origfile.txt', 'w') as orig_cov:
-        #
-        # get bullseye output file of test
-        #
-        subprocess.run(['covbr', '-u -c1 -dDir {}'.format(tst_srcpath)], stdout=orig_cov)
-        amountuncov = create_clean_covoutput(orig_cov, ignore_list, ouput_path + tst_name + 'cov.txt')
+    
+    p = subprocess.Popen('covbr -u -c1 -dDir {}'.format(ouput_path), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    out, err = p.communicate()
+	#TODO: verify return code
+
+    amountuncov  = create_clean_covoutput(out.decode('ascii').split('\\n'), ignore_list, '{}tst_name_cov.txt'.format(ouput_path))
+
+
     return amountuncov == 0
 
 
@@ -104,7 +106,16 @@ def main():
 
             succsess_dict[tstname] = tstcov(tstname, src_path, ignore_list, output_dir)
 
+        all_tests_passed = True
+        print('Bullseye Covarege reslut\n')
+
+        for tstname, res in succsess_dict.items():
+            all_tests_passed = all_tests_passed and res
+            if not res:
+                print('test: {} Failed!!!'.format(tstname, res))
+            else:
+                print('test: {} Passed'.format(tstname, res))
+
 
 if __name__ == '__main__':
-    #create_clean_covoutput(r'C:\Users\hsreter\Desktop\ethCovWtSrcCode.txt',['if (ptrPinnedData->ccfcPinnedCount >= MAX_PINNED_CCFC)'], r'C:\Users\hsreter\Desktop\testcov.txt') 
-    main()
+  main()

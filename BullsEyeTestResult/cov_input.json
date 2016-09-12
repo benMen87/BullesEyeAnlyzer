@@ -3,7 +3,7 @@
         
         "Eth" : {
                     "src_path" : "..\\Main\\MainFw\\Eth\\Src\\",
-                    "ignore"   : [""]
+                    "ignore"   : ["", ""]
         },
         "LL2" : {
                     "src_path" : "..\\Main\\MainFw\\Core\\Src\\",
