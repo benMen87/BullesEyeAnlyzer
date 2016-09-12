@@ -1,0 +1,21 @@
+{
+    "Tests" : {
+        
+        "Eth" : {
+                    "src_path" : "..\\Main\\MainFw\\Eth\\Src\\",
+                    "ignore"   : [""]
+        },
+        "LL2" : {
+                    "src_path" : "..\\Main\\MainFw\\Core\\Src\\",
+                    "ignore"   : [""]
+        },
+        "L2b" : {
+                    "src_path" : "..\\L2b\\L2bFw\\Src\\",
+                    "ignore"   : [""]
+        }
+    },
+    "Global" : {
+        "ignore" : ["default"],
+        "output_dir" : ""
+    }
+}
