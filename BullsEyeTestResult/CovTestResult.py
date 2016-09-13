@@ -7,7 +7,7 @@ import json
 
 
 
-def create_clean_covoutput(orig_uncov_list, ignor_list, outputcov_fullpath):
+def create_clean_covoutput(orig_uncov, ignor_list, outputcov_fullpath):
 
     with open(outputcov_fullpath, 'w') as outfp:
         
@@ -24,7 +24,7 @@ def create_clean_covoutput(orig_uncov_list, ignor_list, outputcov_fullpath):
 
 
         new_srcfile = False
-        for line in orig_uncov_list: 
+        for line in orig_uncov: 
             #
             # match uncovered line regexp
             uncov_match =  uncov_somthing.match(line.rstrip())
@@ -95,12 +95,16 @@ def create_clean_covoutput(orig_uncov_list, ignor_list, outputcov_fullpath):
 
 def tstcov(tst_name, tst_srcpath, ignore_list, ouput_path):
     
-    p = subprocess.Popen('covbr -u -c0 -dDir {}'.format(tst_srcpath), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    out, err = p.communicate()
-    print('######################################')
-    print(err.decode('ascii'))
-	#TODO: verify return code
-    amountuncov  = create_clean_covoutput(out.decode('utf-8').split('\r\n'), ignore_list, '{}{}_cov.txt'.format(ouput_path, tst_name))
+    my_output = '{}{}_cov.txt'.format(ouput_path, tst_name)
+    be_output = '{}{}_Origcov.txt'.format(ouput_path, tst_name)
+
+    with open(be_output, 'w') as orig_out:
+        p = subprocess.Popen('covbr -u -c0 -dDir {}'.format(tst_srcpath), stdout=orig_out, stderr=subprocess.PIPE)
+        out, err = p.communicate()
+	    #TODO: verify return code
+
+    with open(be_output, 'r') as orig_out:
+        amountuncov  = create_clean_covoutput(orig_out, ignore_list, )
 
 
     return amountuncov == 0
