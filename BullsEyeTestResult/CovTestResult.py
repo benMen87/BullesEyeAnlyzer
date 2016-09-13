@@ -22,26 +22,31 @@ def create_clean_covoutput(orig_uncov_list, ignor_list, outputcov_fullpath):
         currcodeline_number = 0
         prevcodeline_number = 0
 
+
         new_srcfile = False
         for line in orig_uncov_list: 
             #
             # match uncovered line regexp
-            uncov_match =  uncov_somthing.match(line)
+            uncov_match =  uncov_somthing.match(line.rstrip())
             #
             # Write source file name - on first uncovered line of function 
             if filepathe_patt.match(line):
                 new_srcfile = True
+                src_path = line
             
             
             if uncov_match:
                 #
-                # Line is uncovered lets find out what type of line it is...
+                # Write src file name only after we know it has uncoverd paths
                 if new_srcfile:
                     new_srcfile = False
                     if uncov_count > 0:
                         outfp.write('\n\n\n')
-                    outfp.write(line)
-                
+                    print(src_path)
+                    outfp.write(src_path)
+                #
+                # Line is uncovered lets find out what type of line it is...
+
                 currcodeline_number = int(uncov_match.group(1))
                 uncov_count += 1
                 #
@@ -90,11 +95,12 @@ def create_clean_covoutput(orig_uncov_list, ignor_list, outputcov_fullpath):
 
 def tstcov(tst_name, tst_srcpath, ignore_list, ouput_path):
     
-    p = subprocess.Popen('covbr -u -c0 -dDir {}'.format(ouput_path), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen('covbr -u -c0 -dDir {}'.format(tst_srcpath), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = p.communicate()
+    print('######################################')
+    print(err.decode('ascii'))
 	#TODO: verify return code
-
-    amountuncov  = create_clean_covoutput(out.decode('ascii').split('\\n'), ignore_list, '{}tst_name_cov.txt'.format(ouput_path))
+    amountuncov  = create_clean_covoutput(out.decode('utf-8').split('\r\n'), ignore_list, '{}{}_cov.txt'.format(ouput_path, tst_name))
 
 
     return amountuncov == 0

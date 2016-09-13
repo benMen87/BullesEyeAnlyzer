@@ -14,7 +14,7 @@
     <Name>CovTestResult</Name>
     <RootNamespace>BullsEyeTestResult</RootNamespace>
     <LaunchProvider>Standard Python launcher</LaunchProvider>
-    <InterpreterArguments>-i C:\Users\Administrator\Source\Repos\BullesEyeAnlyzer\cov_input.json</InterpreterArguments>
+    <InterpreterArguments>-i C:\Users\Administrator\Source\Repos\BullesEyeAnlyzer\BullsEyeTestResult\cov_input.json</InterpreterArguments>
     <EnableNativeCodeDebugging>False</EnableNativeCodeDebugging>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
